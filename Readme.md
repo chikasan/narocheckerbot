@@ -10,7 +10,7 @@
 * Python : 3.9.5
 * discord.py : 1.7.3
 * poetry : 1.1.5
-* git
+* git : 2.27.0
 
 ## 初期設定
 
