@@ -112,8 +112,10 @@ class NaroChecker(commands.Cog):
     async def checker(self) -> None:
         """更新チェック."""
         try:
+            self.logger.info("Check: Start")
             promises = [self.fetch(url) for url in self.yaml_data["account"]]
             await asyncio.gather(*promises)
+            self.logger.info("Check: Finish")
         except AttributeError:
             message = "要素参照エラーが発生しました。エラーログを確認してください。"
             self.logger.info(message)
