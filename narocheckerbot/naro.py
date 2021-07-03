@@ -30,6 +30,7 @@ class NaroChecker(commands.Cog):
         with open(self.configfile, "r") as stream:
             self.yaml_data = yaml.safe_load(stream)
         self.channel_id = self.yaml_data["channel"]
+        self.sem = asyncio.Semaphore(10)
         self.checker.start()
 
     def cog_unload(self):
@@ -88,7 +89,8 @@ class NaroChecker(commands.Cog):
         Args:
             url (Dict[str, Any]): ncodeと最終更新日を記載した辞書データ
         """
-        (new_lastup, title) = await self.check_update(url)
+        async with self.sem:
+            (new_lastup, title) = await self.check_update(url)
 
         if len(title) > 0:
             self.logger.info(f"Check Success: {url['ncode']}")
