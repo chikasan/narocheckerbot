@@ -46,11 +46,12 @@
 
 * add
   * チェックする小説を追加
-    * すでに登録中の場合は追加されません。
+    * 追加した ncode と最終更新日を config.yaml に追記。
   * コマンド: #add {ncode}
     * 例: #add n5040ce
-* delete(開発中)
+* delete
   * 小説のチェックを解除
+    * 削除した ncode は config.yaml からも削除。
   * コマンド: #delete {ncode}
     * 例: #delete n5040ce
 
