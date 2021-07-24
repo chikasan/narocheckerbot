@@ -167,6 +167,27 @@ class NaroChecker(commands.Cog):
 
     @commands.command()
     @commands.is_owner()
+    async def delete(self, ctx: commands.Context, ncode: str):
+        """更新小説の削除コマンドです(Bot管理者のみ実行可能).
+
+        Args:
+            ctx (commands.Context): コンテキスト情報
+            ncode (str): ncode
+        """
+        for index, url in enumerate(self.yaml_data["account"]):
+            if url["ncode"] == ncode:
+                removed_value = self.yaml_data["account"].pop(index)
+                with open(self.configfile, "w") as stream:
+                    yaml.dump(self.yaml_data, stream=stream)
+                self.logger.info(f"Delete Success: {removed_value['ncode']}")
+                await ctx.send(f"{removed_value['ncode']}を削除しました")
+                return
+
+        self.logger.info(f"Delete Failed: {ncode}")
+        await ctx.send("登録していない ncode です。")
+
+    @commands.command()
+    @commands.is_owner()
     async def reload(self, ctx: commands.Context):
         """Botの一部機能を再読込します(エラー時の再起動の代わりにまず実施することを想定).
 
