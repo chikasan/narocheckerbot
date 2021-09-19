@@ -61,7 +61,7 @@ class NaroChecker(commands.Cog):
         try:
             async with aiohttp.ClientSession() as session:
                 ncode = url["ncode"]
-                self.logger.info(f"check: {ncode}")
+                self.logger.info(f"Check: {ncode}")
                 address = f"https://api.syosetu.com/novelapi/api/?ncode={ncode}&of=t-gl"
                 # Todo : 存在チェックは可能?
 
