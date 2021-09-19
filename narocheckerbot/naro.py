@@ -111,6 +111,7 @@ class NaroChecker(commands.Cog):
         else:
             message = f"Check Failed: {url['ncode']}"
             self.logger.info(message)
+            await self.sendmessage(message)
 
     @tasks.loop(seconds=3600)
     async def checker(self) -> None:
