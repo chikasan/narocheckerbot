@@ -75,6 +75,10 @@ class NaroChecker(commands.Cog):
                         self.logger.info(f"Retry check: {ncode} {cnt}")
                         cnt = cnt + 1
                         await asyncio.sleep(60)
+                    except IndexError:
+                        self.logger.info(f"IndexError check: {ncode} {cnt}")
+                        cnt = cnt + 1
+                        await asyncio.sleep(60)
                 self.logger.info(f"Timeout check: {ncode}")
                 return (datetime.now(), "")
         except TypeError as e:
