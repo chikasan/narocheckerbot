@@ -25,7 +25,7 @@ class NaroBot(commands.Bot):
         """
         super().__init__(command_prefix="#", intents=intents)
         self.logger = logger
-        self.load_extension("naro")
+        self.load_extension("narocheckerbot.naro")
 
     def run(self, token: str):
         """Botの起動処理.
