@@ -69,8 +69,15 @@ class NaroChecker(commands.Cog):
                 while cnt < 5:
                     try:
                         async with session.get(address) as r:
-                            result = yaml.safe_load(await r.text())[1]
-                            return (result["general_lastup"], result["title"])
+                            result = yaml.safe_load(await r.text())
+                            if len(result) == 2:
+                                return (result[1]["general_lastup"], result[1]["title"])
+                            elif len(result) < 2:
+                                self.logger.info(f"Not Found: {ncode} {cnt}")
+                                return (datetime.now(), "")
+                            else:
+                                self.logger.info(f"Lots of candidates: {ncode} {cnt}")
+                                return (datetime.now(), "")
                     except TypeError:
                         self.logger.info(f"Retry check: {ncode} {cnt}")
                         cnt = cnt + 1
