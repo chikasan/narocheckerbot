@@ -118,8 +118,14 @@ class NaroChecker(commands.Cog):
         """更新チェック."""
         try:
             self.logger.info("Check: Start")
-            promises = [self.fetch(url) for url in self.yaml_data["account"]]
-            await asyncio.gather(*promises)
+
+            urls = self.yaml_data["account"]
+            if urls is None:
+                self.logger.info("Check: Url is None.")
+            else:
+                promises = [self.fetch(url) for url in urls]
+                await asyncio.gather(*promises)
+
             self.logger.info("Check: Finish")
         except AttributeError:
             message = "要素参照エラーが発生しました。エラーログを確認してください。"
@@ -147,10 +153,14 @@ class NaroChecker(commands.Cog):
             ctx (commands.Context): コンテキスト情報
             ncode (str): ncode
         """
-        for url in self.yaml_data["account"]:
-            if url["ncode"] == ncode:
-                await ctx.send(f"{ncode}はすでに登録されています.")
-                return
+        urls = self.yaml_data["account"]
+        if urls is not None:
+            for url in urls:
+                if url["ncode"] == ncode:
+                    await ctx.send(f"{ncode}はすでに登録されています.")
+                    return
+        else:
+            self.yaml_data["account"] = []
 
         url = {"lastupdated": 0, "ncode": ncode}
         (new_lastup, title) = await self.check_update(url)
@@ -158,8 +168,7 @@ class NaroChecker(commands.Cog):
         if len(title) > 0:
             url["lastupdated"] = new_lastup
 
-            data = self.yaml_data["account"]
-            data.append(url)
+            self.yaml_data["account"].append(url)
 
             with open(self.configfile, "w") as stream:
                 yaml.dump(self.yaml_data, stream=stream)
@@ -168,7 +177,7 @@ class NaroChecker(commands.Cog):
             await ctx.send(f"{ncode}を追加しました")
         else:
             self.logger.info(f"Add Failed: {ncode}")
-            await ctx.send("なろうAPIでアクセスできなかったので、追加しませんでした。")
+            await ctx.send("登録に失敗しました。正しいncodeを指定しているか確認してください。")
 
     @commands.command()
     @commands.is_owner()
