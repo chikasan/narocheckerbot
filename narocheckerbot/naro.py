@@ -44,8 +44,6 @@ class NaroChecker(commands.Cog):
         Args:
             message (str): 送付メッセージ
         """
-
-    async def send_message(self, channel, message):
         try:
             channel = self.bot.get_channel(self.channel_id)
             if channel:
