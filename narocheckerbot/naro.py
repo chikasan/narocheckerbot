@@ -6,6 +6,7 @@ from datetime import datetime
 
 import aiohttp
 import asyncio
+import discord
 from discord.ext import commands, tasks
 from ruamel import yaml
 
@@ -43,11 +44,17 @@ class NaroChecker(commands.Cog):
         Args:
             message (str): 送付メッセージ
         """
-        channel = self.bot.get_channel(self.channel_id)
-        if channel:
-            await channel.send(message)
-        else:
-            self.logger.info("書き込みチャンネルが見つかりません")
+
+    async def send_message(self, channel, message):
+        try:
+            channel = self.bot.get_channel(self.channel_id)
+            if channel:
+                await channel.send(message)
+            else:
+                self.logger.info("書き込みチャンネルが見つかりません")
+        except discord.errors.Forbidden:
+            self.logger.error("書き込み権限がありません。")
+        pass
 
     async def check_update(self, url: Dict[str, Any]) -> Tuple[datetime, str]:
         """URLチェック.
