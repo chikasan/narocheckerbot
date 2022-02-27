@@ -9,13 +9,13 @@
 * Windows
   * Windows10 64bit 21H1
   * Python : 3.9.5
-  * discord.py : 1.7.3
+  * py-cord 2.0.0b4
   * poetry : 1.1.5
   * git : 2.27.0
 * Raspberry Pi
   * Raspbian GNU/Linux 10 (buster)
   * Python : 3.9.5
-  * discord.py : 1.7.3
+  * py-cord 2.0.0b4
   * poetry : 1.1.6
   * git : 2.20.1
 
