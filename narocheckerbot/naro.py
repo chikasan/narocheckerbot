@@ -221,7 +221,7 @@ class NaroChecker(commands.Cog):
             ctx (commands.Context): コンテキスト情報
         """
         try:
-            self.bot.reload_extension("naro")
+            await self.bot.reload_extension("naro")
             self.logger.info("Reload.")
             await ctx.send("リロードしました")
         except Exception:
@@ -230,10 +230,10 @@ class NaroChecker(commands.Cog):
             await ctx.send("リロードに失敗しました。")
 
 
-def setup(bot: commands.Bot) -> None:
+async def setup(bot: commands.Bot) -> None:
     """Cogの登録.
 
     Args:
         bot (commands.Bot): 参照するBotクラス
     """
-    bot.add_cog(NaroChecker(bot))
+    await bot.add_cog(NaroChecker(bot))

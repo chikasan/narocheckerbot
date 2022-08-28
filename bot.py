@@ -26,7 +26,9 @@ class NaroBot(commands.Bot):
         """
         super().__init__(command_prefix="#", intents=intents)
         self.logger = logger
-        self.load_extension("narocheckerbot.naro")
+
+    async def setup_hook(self):
+        await self.load_extension("narocheckerbot.naro")
 
     def run(self, token: str):
         """Botの起動処理.
@@ -64,11 +66,9 @@ if __name__ == "__main__":
     logger.propagate = False
 
     intents = discord.Intents.default()
+    intents.message_content = True
     client = NaroBot(logger, intents)
 
     TOKEN = os.environ["NAROBOT_TOKEN"]
 
-    try:
-        client.loop.run_until_complete(client.start(TOKEN))
-    except KeyboardInterrupt:
-        client.loop.run_until_complete(client.close())
+    client.run(TOKEN)

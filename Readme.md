@@ -9,13 +9,13 @@
 * Windows
   * Windows10 64bit 21H1
   * Python : 3.9.5
-  * py-cord 2.0.0b4
+  * discord.py 2.0.1
   * poetry : 1.1.5
   * git : 2.27.0
 * Raspberry Pi
   * Raspbian GNU/Linux 10 (buster)
   * Python : 3.9.5
-  * py-cord 2.0.0b4
+  * discord.py 2.0.1
   * poetry : 1.1.6
   * git : 2.20.1
 
@@ -35,6 +35,8 @@
    * Discord Botの権限
      * Scopes : bot のみチェック
      * Bot Permissions : Send Messages のみチェック
+   * 特権インテント
+     * Message Content Intent をチェック
 
 ## 起動方法
 

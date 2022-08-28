@@ -8,7 +8,7 @@ license = "MIT License"
 [tool.poetry.dependencies]
 python = "^3.9"
 "ruamel.yaml" = "^0.17.9"
-py-cord = "2.0.0b4"
+"discord.py" = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
