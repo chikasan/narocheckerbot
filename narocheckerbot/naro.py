@@ -7,7 +7,7 @@ from datetime import datetime
 import aiohttp
 import asyncio
 import discord
-from discord.ext import commands, tasks
+from discord.ext import tasks, commands
 from ruamel import yaml
 
 
@@ -46,7 +46,7 @@ class NaroChecker(commands.Cog):
         """
         try:
             channel = self.bot.get_channel(self.channel_id)
-            if channel:
+            if isinstance(channel, discord.TextChannel):
                 await channel.send(message)
             else:
                 self.logger.info("書き込みチャンネルが見つかりません")
