@@ -156,7 +156,7 @@ class NaroChecker(commands.Cog):
         self.logger.info("waiting...")
         await self.bot.wait_until_ready()
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.is_owner()
     async def add(self, ctx: commands.Context, ncode: str):
         """更新小説の追加コマンドです(Bot管理者のみ実行可能).
@@ -191,7 +191,7 @@ class NaroChecker(commands.Cog):
             self.logger.info(f"Add Failed: {ncode}")
             await ctx.send("登録に失敗しました。正しいncodeを指定しているか確認してください。")
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.is_owner()
     async def delete(self, ctx: commands.Context, ncode: str):
         """更新小説の削除コマンドです(Bot管理者のみ実行可能).
@@ -212,7 +212,7 @@ class NaroChecker(commands.Cog):
         self.logger.info(f"Delete Failed: {ncode}")
         await ctx.send("登録していない ncode です。")
 
-    @commands.command()
+    @commands.hybrid_command()
     @commands.is_owner()
     async def reload(self, ctx: commands.Context):
         """Botの一部機能を再読込します(エラー時の再起動の代わりにまず実施することを想定).
