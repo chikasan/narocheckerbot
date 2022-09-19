@@ -33,10 +33,10 @@
 5. コピーしたconfig.yamlを開き、channel: 00000000000000000 の 00000000000000000 を更新を通知したいdiscordチャンネルのIDに書き換える。
 6. 環境変数 NAROBOT_TOKEN を登録し、値として実際に使うBotのトークンを指定する。
    * Discord Botの権限
-     * Scopes : bot のみチェック
-     * Bot Permissions : Send Messages のみチェック
+     * Scopes : bot と application.commands をチェック
+     * Bot Permissions : Send Messages と Use Slash Commands をチェック
    * 特権インテント
-     * Message Content Intent をチェック
+     * チェックしない。
 
 ## 起動方法
 
@@ -46,18 +46,18 @@
    python3 bot.py
    ```
 
-## コマンド
+## スラッシュコマンド
 
 * add
   * チェックする小説を追加
     * 追加した ncode と最終更新日を config.yaml に追記。
-  * コマンド: #add {ncode}
-    * 例: #add n5040ce
+  * コマンド: /add {ncode}
+    * 例: /add ncode:n5040ce
 * delete
   * 小説のチェックを解除
     * 削除した ncode は config.yaml からも削除。
-  * コマンド: #delete {ncode}
-    * 例: #delete n5040ce
+  * コマンド: /delete {ncode}
+    * 例: /delete ncode:n5040ce
 
 ## ライセンス
 
