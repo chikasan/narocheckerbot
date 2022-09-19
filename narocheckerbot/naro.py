@@ -1,6 +1,7 @@
 import os
 from logging import getLogger
-import traceback
+
+# import traceback
 from typing import Dict, Any, Tuple
 from datetime import datetime
 
@@ -50,7 +51,7 @@ class NaroChecker(commands.Cog):
             if isinstance(channel, discord.TextChannel):
                 await channel.send(message)
             else:
-                self.logger.info("書き込みチャンネルが見つかりません")
+                self.logger.error("書き込みチャンネルが見つかりません")
         except discord.errors.Forbidden:
             self.logger.error("書き込み権限がありません。")
         pass
@@ -79,25 +80,27 @@ class NaroChecker(commands.Cog):
                             if len(result) == 2:
                                 return (result[1]["general_lastup"], result[1]["title"])
                             elif len(result) < 2:
-                                self.logger.info(f"Not Found: {ncode} {cnt}")
+                                self.logger.error(f"Not Found: {ncode} {cnt}")
                                 return (datetime.now(), "")
                             else:
-                                self.logger.info(f"Lots of candidates: {ncode} {cnt}")
+                                self.logger.error(f"Lots of candidates: {ncode} {cnt}")
                                 return (datetime.now(), "")
                     except TypeError:
-                        self.logger.info(f"Retry check: {ncode} {cnt}")
+                        self.logger.error(f"Retry check: {ncode} {cnt}")
                         cnt = cnt + 1
                         await asyncio.sleep(60)
                     except IndexError:
-                        self.logger.info(f"IndexError check: {ncode} {cnt}")
+                        self.logger.error(f"IndexError check: {ncode} {cnt}")
                         cnt = cnt + 1
                         await asyncio.sleep(60)
+                    except OSError:
+                        self.logger.exception(f"Timeout Semaphore: {ncode} {cnt}")
+                        break
                 self.logger.info(f"Timeout check: {ncode}")
                 return (datetime.now(), "")
         except TypeError as e:
-            message = f"Error check: {e}"
-            self.logger.info(message)
-            self.logger.info(traceback.format_exc())
+            self.logger.exception(f"Error check: {e}")
+            # self.logger.info(traceback.format_exc())
             return (datetime.now(), "")
 
     async def fetch(self, url: Dict[str, Any]) -> None:
@@ -123,7 +126,7 @@ class NaroChecker(commands.Cog):
                 self.logger.info(f"Update: {url['ncode']} {title}")
         else:
             message = f"Check Failed: {url['ncode']}"
-            self.logger.info(message)
+            self.logger.error(message)
             await self.sendmessage(message)
 
     @tasks.loop(seconds=3600)
@@ -142,13 +145,13 @@ class NaroChecker(commands.Cog):
             self.logger.info("Check: Finish")
         except AttributeError:
             message = "要素参照エラーが発生しました。エラーログを確認してください。"
-            self.logger.info(message)
-            self.logger.info(traceback.format_exc())
+            self.logger.exception(message)
+            # self.logger.info(traceback.format_exc())
             await self.sendmessage(message)
         except Exception:
             message = "処理中に問題が発生しました。エラーログを確認してください。"
-            self.logger.info(message)
-            self.logger.info(traceback.format_exc())
+            self.logger.exception(message)
+            # self.logger.info(traceback.format_exc())
             await self.sendmessage(message)
 
     @checker.before_loop
