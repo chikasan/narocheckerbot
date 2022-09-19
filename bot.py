@@ -68,7 +68,6 @@ if __name__ == "__main__":
     logger.propagate = False
 
     intents = discord.Intents.default()
-    intents.message_content = True
     client = NaroBot(logger, intents)
 
     TOKEN = os.environ["NAROBOT_TOKEN"]
