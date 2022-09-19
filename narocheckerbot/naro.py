@@ -162,7 +162,7 @@ class NaroChecker(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def add_command(self, interaction: Interaction, ncode: str) -> None:
+    async def add(self, interaction: Interaction, ncode: str) -> None:
         """更新小説の追加コマンドです(Bot管理者のみ実行可能).
 
         Args:
@@ -199,7 +199,7 @@ class NaroChecker(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def delete_command(self, interaction: Interaction, ncode: str):
+    async def delete(self, interaction: Interaction, ncode: str):
         """更新小説の削除コマンドです(Bot管理者のみ実行可能).
 
         Args:
@@ -222,7 +222,7 @@ class NaroChecker(commands.Cog):
 
     @app_commands.command()
     @app_commands.default_permissions()
-    async def reload_command(self, interaction: Interaction):
+    async def reload(self, interaction: Interaction):
         """Botの一部機能を再読込します(エラー時の再起動の代わりにまず実施することを想定).
 
         Args:
