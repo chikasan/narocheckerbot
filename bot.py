@@ -24,7 +24,7 @@ class NaroBot(commands.Bot):
             logger (Logger): ロガーオブジェクト
             intents (discord.Intents): intentオブジェクト
         """
-        super().__init__(command_prefix="#", intents=intents)
+        super().__init__(command_prefix=[], intents=intents)
         self.logger = logger
 
     async def setup_hook(self):
