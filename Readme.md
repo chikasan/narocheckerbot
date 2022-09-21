@@ -34,7 +34,7 @@
 6. 環境変数 NAROBOT_TOKEN を登録し、値として実際に使うBotのトークンを指定する。
    * Discord Botの権限
      * Scopes : bot と application.commands をチェック
-     * Bot Permissions : Send Messages と Use Slash Commands をチェック
+     * Bot Permissions : Send Messages をチェック
    * 特権インテント
      * チェックしない。
 
