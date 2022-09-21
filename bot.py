@@ -58,7 +58,9 @@ if __name__ == "__main__":
     logPath = Path("Logs")
     logPath.mkdir(exist_ok=True)
 
-    file_handler = FileHandler(logPath / f"log{datetime.now():%Y%m%d%H%M%S}.log")
+    file_handler = FileHandler(
+        logPath / f"log{datetime.now():%Y%m%d%H%M%S}.log", encoding="utf-8"
+    )
     file_handler.setLevel(DEBUG)
     file_handler.setFormatter(
         Formatter("%(asctime)s@ %(name)s [%(levelname)s] %(funcName)s: %(message)s")
