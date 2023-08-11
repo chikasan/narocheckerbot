@@ -7,16 +7,16 @@
 ## 動作確認環境
 
 * Windows
-  * Windows10 64bit 21H1
-  * Python : 3.9.5
-  * discord.py 2.0.1
-  * poetry : 1.1.5
-  * git : 2.27.0
+  * Windows10 64bit 22H2
+  * Python : 3.11.4
+  * discord.py 2.3.1
+  * poetry : 1.5.1
+  * git : 2.35.3
 * Raspberry Pi
   * Raspbian GNU/Linux 10 (buster)
-  * Python : 3.9.5
-  * discord.py 2.0.1
-  * poetry : 1.1.6
+  * Python : 3.11.4
+  * discord.py 2.3.1
+  * poetry : 1.5.1
   * git : 2.20.1
 
 ## 初期設定
@@ -26,7 +26,7 @@
 3. pyproject.tomlがあるディレクトリ上で下記を実行し、動作に必要なソフトウェアをインストールする。
 
    ```
-   poetry install --no-dev
+   poetry install --only main
    ```
 
 4. sampleディレクトリにある。config.yamlをnarocheckerbotディレクトリにコピーする。
