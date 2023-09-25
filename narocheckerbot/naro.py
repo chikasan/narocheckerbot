@@ -1,15 +1,13 @@
+import asyncio
 import os
-from logging import getLogger
-
-# import traceback
-from typing import Dict, Any, Tuple
 from datetime import datetime
+from logging import getLogger
+from typing import Any, Dict, Tuple
 
 import aiohttp
-import asyncio
 import discord
-from discord.ext import tasks, commands
-from discord import app_commands, Interaction
+from discord import Interaction, app_commands
+from discord.ext import commands, tasks
 from ruamel import yaml
 
 

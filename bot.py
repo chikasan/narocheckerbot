@@ -3,7 +3,7 @@
 
 import os
 from datetime import datetime
-from logging import getLogger, StreamHandler, DEBUG, Formatter, Logger, FileHandler
+from logging import DEBUG, FileHandler, Formatter, Logger, StreamHandler, getLogger
 from pathlib import Path
 
 import discord
