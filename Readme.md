@@ -25,7 +25,7 @@
 2. github上のファイルをダウンロードし、任意の位置に格納する。(git cloneでも可)
 3. pyproject.tomlがあるディレクトリ上で下記を実行し、動作に必要なソフトウェアをインストールする。
 
-   ```
+   ```bash
    poetry install --only main
    ```
 
@@ -42,7 +42,7 @@
 
 1. 下記コマンドを実行しBotを起動する。
 
-   ```
+   ```bash
    python3 bot.py
    ```
 
