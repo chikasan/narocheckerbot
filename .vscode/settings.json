@@ -1,15 +1,17 @@
 {
-    "python.linting.enabled": true,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.lintOnSave": true,
-    "python.formatting.provider": "black",
-    "python.linting.flake8Args": [
-        "--max-line-length",
-        "88",
-        "--ignore=D100,D104,E203,W503"
-      ],
-    "editor.formatOnSave": true,
-    "python.pythonPath": ".venv\\Scripts\\python.exe",
-    "restructuredtext.languageServer.disabled": true
+    "[python]": {
+        // VS Code のフォーマッターとして Black Formatter 拡張を使う
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        // ファイル保存時に自動でフォーマットする
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        }
+    },
+    "flake8.args": [
+        "--max-line-length=88",
+        "--ignore=D100,D104,E203,W503,W504"
+    ],
+    "isort.args": ["--profile", "black"],
+    "editor.formatOnSave": true
 }
