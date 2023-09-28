@@ -10,13 +10,13 @@
   * Windows10 64bit 22H2
   * Python : 3.11.4
   * discord.py 2.3.1
-  * poetry : 1.5.1
+  * poetry : 1.6.1
   * git : 2.35.3
 * Raspberry Pi
   * Raspbian GNU/Linux 10 (buster)
   * Python : 3.11.4
   * discord.py 2.3.1
-  * poetry : 1.5.1
+  * poetry : 1.6.1
   * git : 2.20.1
 
 ## 初期設定
