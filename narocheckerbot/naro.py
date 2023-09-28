@@ -1,6 +1,6 @@
 import asyncio
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from logging import getLogger
 from typing import Any, Dict, Tuple
 
@@ -157,6 +157,18 @@ class NaroChecker(commands.Cog):
         """更新チェック開始前に実施."""
         self.logger.info("waiting...")
         await self.bot.wait_until_ready()
+
+        # 更新の反映に最大5分かかるということで、予備で+2分設定。
+        dt_now = datetime.now()
+        dt2 = dt_now.replace(minute=7, second=0)
+
+        if dt2 > dt_now:
+            td = dt2 - dt_now
+        else:
+            td = dt2 - dt_now + timedelta(hours=1)
+
+        self.logger.info(f"Wait time : {td.total_seconds()}")
+        await asyncio.sleep(td.total_seconds())
 
     @app_commands.command()
     @app_commands.default_permissions()
