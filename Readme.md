@@ -13,11 +13,11 @@
   * poetry : 1.6.1
   * git : 2.35.3
 * Raspberry Pi
-  * Raspbian GNU/Linux 10 (buster)
-  * Python : 3.11.4
+  * Debian GNU/Linux 12 (bookworm) 64bit
+  * Python : 3.11.2
   * discord.py 2.3.1
   * poetry : 1.6.1
-  * git : 2.20.1
+  * git : 2.39.2
 
 ## 初期設定
 
@@ -29,7 +29,7 @@
    poetry install --only main
    ```
 
-4. sampleディレクトリにある。config.yamlをnarocheckerbotディレクトリにコピーする。
+4. sampleディレクトリにある。config.yamlをnarocheckerbot/narocheckerbotディレクトリにコピーする。
 5. コピーしたconfig.yamlを開き、channel: 00000000000000000 の 00000000000000000 を更新を通知したいdiscordチャンネルのIDに書き換える。
 6. 環境変数 NAROBOT_TOKEN を登録し、値として実際に使うBotのトークンを指定する。
    * Discord Botの権限
