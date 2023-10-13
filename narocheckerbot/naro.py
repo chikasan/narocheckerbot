@@ -8,7 +8,7 @@ import aiohttp
 import discord
 from discord import Interaction, app_commands
 from discord.ext import commands, tasks
-from ruamel import yaml
+from ruamel.yaml import YAML
 
 
 class NaroChecker(commands.Cog):
@@ -28,8 +28,11 @@ class NaroChecker(commands.Cog):
         self.bot = bot
         self.logger = getLogger("narocheckerlog.bot")
         self.configfile = os.path.dirname(os.path.abspath(__file__)) + "/config.yaml"
+
         with open(self.configfile, "r") as stream:
-            self.yaml_data = yaml.safe_load(stream)
+            yaml = YAML()
+            self.yaml_data = yaml.load(stream)
+
         self.channel_id = self.yaml_data["channel"]
         self.sem = asyncio.Semaphore(10)
         self.checker.start()
@@ -74,7 +77,8 @@ class NaroChecker(commands.Cog):
                 while cnt < 5:
                     try:
                         async with session.get(address) as r:
-                            result = yaml.safe_load(await r.text())
+                            yaml = YAML()
+                            result = yaml.load(await r.text())
                             if len(result) == 2:
                                 return (result[1]["general_lastup"], result[1]["title"])
                             elif len(result) < 2:
@@ -119,8 +123,10 @@ class NaroChecker(commands.Cog):
                 message = f"[更新] {title}  {page}"
                 self.logger.info(message)
                 await self.sendmessage(message)
+
                 with open(self.configfile, "w") as stream:
-                    yaml.dump(self.yaml_data, stream=stream)
+                    yaml = YAML()
+                    yaml.dump(data=self.yaml_data, stream=stream)
                 self.logger.info(f"Update: {url['ncode']} {title}")
         else:
             message = f"Check Failed: {url['ncode']}"
@@ -197,7 +203,8 @@ class NaroChecker(commands.Cog):
             self.yaml_data["account"].append(url)
 
             with open(self.configfile, "w") as stream:
-                yaml.dump(self.yaml_data, stream=stream)
+                yaml = YAML()
+                yaml.dump(data=self.yaml_data, stream=stream)
 
             self.logger.info(f"Add Success: {ncode}")
             await interaction.response.send_message(f"{ncode}を追加しました")
@@ -219,8 +226,11 @@ class NaroChecker(commands.Cog):
         for index, url in enumerate(self.yaml_data["account"]):
             if url["ncode"] == ncode:
                 removed_value = self.yaml_data["account"].pop(index)
+
                 with open(self.configfile, "w") as stream:
-                    yaml.dump(self.yaml_data, stream=stream)
+                    yaml = YAML()
+                    yaml.dump(data=self.yaml_data, stream=stream)
+
                 self.logger.info(f"Delete Success: {removed_value['ncode']}")
                 await interaction.response.send_message(
                     f"{removed_value['ncode']}を削除しました"
