@@ -135,18 +135,18 @@ class NaroChecker(commands.Cog):
 
     @tasks.loop(seconds=3600)
     async def checker(self) -> None:
-        """更新チェック."""
-        try:
-            self.logger.info("Check: Start")
+        """更新チェックメイン処理."""
+        self.logger.info("Check: Start")
 
+        try:
             urls = self.yaml_data["account"]
             if urls is None:
                 self.logger.info("Check: Url is None.")
             else:
                 promises = [self.fetch(url) for url in urls]
                 await asyncio.gather(*promises)
-
-            self.logger.info("Check: Finish")
+                self.logger.info("Check: Success")
+        except HTTPException:
         except AttributeError:
             message = "要素参照エラーが発生しました。エラーログを確認してください。"
             self.logger.exception(message)
@@ -155,6 +155,8 @@ class NaroChecker(commands.Cog):
             message = "処理中に問題が発生しました。エラーログを確認してください。"
             self.logger.exception(message)
             await self.sendmessage(message)
+
+        self.logger.info("Check: Finish")
 
     @checker.before_loop
     async def before_checker(self):
