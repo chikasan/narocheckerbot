@@ -8,6 +8,7 @@
             "source.organizeImports": true
         }
     },
+    "python.analysis.typeCheckingMode": "strict",
     "flake8.args": [
         "--max-line-length=88",
         "--ignore=D100,D104,E203,W503,W504"
