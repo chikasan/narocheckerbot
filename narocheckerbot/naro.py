@@ -135,6 +135,10 @@ class NaroChecker(commands.Cog):
 
     @tasks.loop(seconds=3600)
     async def checker(self) -> None:
+        """定期的に実行する処理."""
+        await self.naro_update_check()
+
+    async def naro_update_check(self) -> None:
         """更新チェックメイン処理."""
         self.logger.info("Check: Start")
 
@@ -163,6 +167,9 @@ class NaroChecker(commands.Cog):
         """更新チェック開始前に実施."""
         self.logger.info("waiting...")
         await self.bot.wait_until_ready()
+
+        # 定期チェック開始まで時間がかかる場合があるため、起動直後にもチェックを実施
+        await self.naro_update_check()
 
         # 更新の反映に最大5分かかるということで、予備で+2分設定。
         dt_now = datetime.now()
