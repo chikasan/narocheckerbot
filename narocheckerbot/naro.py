@@ -37,7 +37,7 @@ class NaroChecker(commands.Cog):
         self.sem = asyncio.Semaphore(10)
         self.checker.start()
 
-    def cog_unload(self):
+    async def cog_unload(self):
         """cog終了処理."""
         self.checker.cancel()
 
@@ -198,7 +198,7 @@ class NaroChecker(commands.Cog):
         (new_lastup, title) = await self.check_update(url)
 
         if len(title) > 0:
-            url["lastupdated"] = new_lastup
+            url["lastupdated"] = new_lastup.strftime("%Y-%m-%d %H:%M:%S")
 
             self.yaml_data["account"].append(url)
 
