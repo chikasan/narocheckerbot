@@ -150,12 +150,10 @@ class NaroChecker(commands.Cog):
         except AttributeError:
             message = "要素参照エラーが発生しました。エラーログを確認してください。"
             self.logger.exception(message)
-            # self.logger.info(traceback.format_exc())
             await self.sendmessage(message)
         except Exception:
             message = "処理中に問題が発生しました。エラーログを確認してください。"
             self.logger.exception(message)
-            # self.logger.info(traceback.format_exc())
             await self.sendmessage(message)
 
     @checker.before_loop
