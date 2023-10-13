@@ -7,6 +7,7 @@ from typing import Any, Dict, Tuple
 import aiohttp
 import discord
 from discord import Interaction, app_commands
+from discord.errors import HTTPException
 from discord.ext import commands, tasks
 from ruamel.yaml import YAML
 
@@ -51,6 +52,8 @@ class NaroChecker(commands.Cog):
             channel = self.bot.get_channel(self.channel_id)
             if isinstance(channel, discord.TextChannel):
                 await channel.send(message)
+                # レートリミット対策
+                await asyncio.sleep(1)
             else:
                 self.logger.error("書き込みチャンネルが見つかりません")
         except discord.errors.Forbidden:
@@ -151,6 +154,11 @@ class NaroChecker(commands.Cog):
                 await asyncio.gather(*promises)
                 self.logger.info("Check: Success")
         except HTTPException:
+            message = "レートリミットが発生しました。更新通知が正常に届かない可能性があります"
+            self.logger.exception(message)
+            # レートリミット発生中のため長めの待ち時間を設定
+            await asyncio.sleep(3)
+            await self.sendmessage(message)
         except AttributeError:
             message = "要素参照エラーが発生しました。エラーログを確認してください。"
             self.logger.exception(message)
