@@ -32,14 +32,6 @@ class NaroBot(commands.Bot):
 
         await self.tree.sync()
 
-    def run(self, token: str):
-        """Botの起動処理.
-
-        Args:
-            token (str): DiscordBotのトークン
-        """
-        super().run(token)
-
     async def on_ready(self):
         """起動完了時に呼び出される処理."""
         self.logger.info("なろうBot起動しました")
