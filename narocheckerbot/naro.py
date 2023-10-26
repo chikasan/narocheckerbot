@@ -200,20 +200,22 @@ class NaroChecker(commands.Cog):
             interaction (Interaction): インタラクション情報
             ncode (str): ncode
         """
+        await interaction.response.defer()
+
         urls = self.yaml_data["account"]
         if urls is not None:
             for url in urls:
                 if url["ncode"] == ncode:
-                    await interaction.response.send_message(f"{ncode}はすでに登録されています.")
+                    await interaction.followup.send(f"{ncode}はすでに登録されています.")
                     return
         else:
             self.yaml_data["account"] = []
 
-        url = {"lastupdated": 0, "ncode": ncode}
+        url = {"lastupdated": datetime.now(), "ncode": ncode}
         (new_lastup, title) = await self.check_update(url)
 
         if len(title) > 0:
-            url["lastupdated"] = new_lastup.strftime("%Y-%m-%d %H:%M:%S")
+            url["lastupdated"] = new_lastup
 
             self.yaml_data["account"].append(url)
 
@@ -222,12 +224,10 @@ class NaroChecker(commands.Cog):
                 yaml.dump(data=self.yaml_data, stream=stream)
 
             self.logger.info(f"Add Success: {ncode}")
-            await interaction.response.send_message(f"{ncode}を追加しました")
+            await interaction.followup.send(f"{ncode}を追加しました")
         else:
             self.logger.error(f"Add Failed: {ncode}")
-            await interaction.response.send_message(
-                f"登録に失敗しました。{ncode}が正しいものか確認してください。"
-            )
+            await interaction.followup.send(f"登録に失敗しました。{ncode}が正しいものか確認してください。")
 
     @app_commands.command()
     @app_commands.default_permissions()
