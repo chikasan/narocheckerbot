@@ -52,22 +52,12 @@ class NaroApiGateway:
             if url["lastupdated"] != lastupdated:
                 url["lastupdated"] = lastupdated
 
-                # TODO: 更新結果通知方法
-                # タイトル
                 page = f"https://ncode.syosetu.com/{url[self.id]}/"
                 message = f"[更新] {title},{page}"
-                # self.logger.info(message)
-                # await self.sendmessage(message)
-
-                # 全部更新終わってからで良いのでは？
-                # with open(self.configfile, "w") as stream:
-                #     yaml = YAML()
-                #     yaml.dump(data=self.yaml_data, stream=stream)
                 self.logger.info(f"Update: {url[self.id]},{title}")
         else:
             message = f"Check Failed: {url[self.id]}"
             self.logger.error(message)
-            # await self.sendmessage(message)
 
         return message
 

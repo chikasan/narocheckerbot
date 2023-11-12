@@ -6,7 +6,10 @@ from ruamel.yaml import YAML
 
 
 class ConfigManager:
+    """_summary_."""
+
     def __init__(self) -> None:
+        """初期化."""
         self.logger = getLogger("narocheckerlog.config")
         self.configfile = os.path.dirname(os.path.abspath(__file__)) + "/config.yaml"
 
