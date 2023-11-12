@@ -240,6 +240,24 @@ class NaroChecker(commands.Cog):
             self.logger.error(f"Add Failed: {ncode}")
             await interaction.followup.send(f"登録に失敗しました。{ncode}が正しいものか確認してください。")
 
+    def delete_id(self, urls: Any, ncode: str) -> Dict[Any, Any]:
+        """指定したncodeに対応する小説を削除する。
+
+        Args:
+            urls (Any): _description_
+            ncode (str): _description_
+
+        Returns:
+            Dict[Any, Any]: _description_
+        """
+        removed_value: Dict[Any, Any] = {}
+
+        for index, url in enumerate(urls):
+            if url["ncode"] == ncode:
+                removed_value = urls.pop(index)
+
+        return removed_value
+
     def write_yaml(self, filename: str, data: Any):
         """設定ファイルへの書き込み.
 
@@ -260,20 +278,14 @@ class NaroChecker(commands.Cog):
             interaction (Interaction): インタラクション情報
             ncode (str): ncode
         """
-        for index, url in enumerate(self.yaml_data["account"]):
-            if url["ncode"] == ncode:
-                removed_value = self.yaml_data["account"].pop(index)
-
-                self.write_yaml(filename=self.configfile, data=self.yaml_data)
-
-                self.logger.info(f"Delete Success: {removed_value['ncode']}")
-                await interaction.response.send_message(
-                    f"{removed_value['ncode']}を削除しました"
-                )
-                return
-
-        self.logger.error(f"Delete Failed: {ncode}")
-        await interaction.response.send_message("登録していない ncode です。")
+        removed_value = self.delete_id(self.yaml_data["account"], ncode)
+        if removed_value:
+            self.write_yaml(filename=self.configfile, data=self.yaml_data)
+            self.logger.info(f"Delete Success: {removed_value['ncode']}")
+            await interaction.response.send_message(f"{removed_value['ncode']}を削除しました")
+        else:
+            self.logger.error(f"Delete Failed: {ncode}")
+            await interaction.response.send_message("登録していない ncode です。")
 
     @app_commands.command()
     @app_commands.default_permissions()
