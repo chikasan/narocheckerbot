@@ -9,7 +9,6 @@ from discord.ext import commands, tasks
 
 from narocheckerbot.config_manager import ConfigManager
 from narocheckerbot.naro_api_gateway import NaroApiGateway
-from narocheckerbot.naro_configuration import NaroConfigration
 
 
 class NaroChecker(commands.Cog):
@@ -44,7 +43,9 @@ class NaroChecker(commands.Cog):
             message (str): 送付メッセージ
         """
         try:
-            channel = self.bot.get_channel(self.config_manager.get_channel_id())
+            channel = self.bot.get_channel(
+                self.config_manager.get_config("naro").channel_id
+            )
             if isinstance(channel, discord.TextChannel):
                 await channel.send(message)
                 # レートリミット対策
@@ -66,7 +67,7 @@ class NaroChecker(commands.Cog):
 
         try:
             updated = False
-            urls = self.config_manager.get_urls()
+            urls = self.config_manager.get_config("naro").urls
             results = await self.checker_manager.exec(urls)
 
             if results:
@@ -127,7 +128,7 @@ class NaroChecker(commands.Cog):
         """
         await interaction.response.defer()
 
-        config = NaroConfigration(self.config_manager.get_urls())
+        config = self.config_manager.get_config("naro")
 
         # 事前チェック(リストに登録済みかどうか確認)
         if config.is_exist_account(ncode=ncode):
@@ -158,7 +159,7 @@ class NaroChecker(commands.Cog):
             interaction (Interaction): インタラクション情報
             ncode (str): ncode
         """
-        config = NaroConfigration(self.config_manager.get_urls())
+        config = self.config_manager.get_config("naro")
         removed_value = config.delete(ncode)
         if removed_value:
             self.config_manager.write_yaml()

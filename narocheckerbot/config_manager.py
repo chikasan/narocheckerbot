@@ -1,8 +1,10 @@
 import os
 from logging import getLogger
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from ruamel.yaml import YAML
+
+from narocheckerbot.naro_configuration import NaroConfigration
 
 
 class ConfigManager:
@@ -17,8 +19,19 @@ class ConfigManager:
             yaml = YAML()
             self._yaml_data = yaml.load(stream)
 
+        self._support = ["naro"]
+        self.support_sites: Dict[str, Any] = {}
+        for support_site in self._support:
+            self.support_sites[support_site] = self.factory_config(support_site)
+
         # self.channel_id = self.yaml_data["channel"]
         pass
+
+    def factory_config(self, site: str) -> NaroConfigration:
+        if site == "naro":
+            return NaroConfigration(self._yaml_data[site])
+        else:
+            raise KeyError("サポート外")
 
     def write_yaml(self):
         """設定ファイルへの書き込み."""
@@ -26,20 +39,13 @@ class ConfigManager:
             yaml = YAML()
             yaml.dump(data=self._yaml_data, stream=stream)
 
-    def get_urls(self) -> List[Dict[Any, Any]]:
-        """URLリストを返す.
+    def get_config(self, site: str) -> NaroConfigration:
+        """サイト別の設定を取得
+
+        Args:
+            site (str): サポートサイト名称
 
         Returns:
-            Dict[Any, Any]: _description_
+            NaroConfigration: _description_
         """
-        return self._yaml_data["naro"]["account"]
-
-    def get_channel_id(self) -> int:
-        """結果を書き込むチャンネルIDを返す.
-
-        Returns:
-            int: チャンネルID
-        """
-        return self._yaml_data["naro"]["channel"]
-
-    pass
+        return self.support_sites[site]

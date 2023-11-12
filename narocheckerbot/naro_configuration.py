@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from narocheckerbot.novel_configration import NovelConfigration
 
@@ -7,13 +7,12 @@ class NaroConfigration(NovelConfigration):
     """なろうAPIのデータ管理クラス.
 
     Args:
-        NovelConfigration (_type_): _description_
+        NovelConfigration (_type_): 基底クラス
     """
 
-    def __init__(self, urls: List[Dict[Any, Any]]) -> None:
+    def __init__(self, urls: Any) -> None:
         # TODO: データが正しいかどうかの確認
-        self.urls = urls
-        super().__init__()
+        super().__init__(urls)
 
     def add(self, url: Dict[Any, Any]):
         """_summary_
