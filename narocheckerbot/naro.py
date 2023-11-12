@@ -235,7 +235,7 @@ class NaroChecker(commands.Cog):
             self.write_yaml(filename=self.configfile, data=self.yaml_data)
 
             self.logger.info(f"Add Success: {ncode}")
-            await interaction.followup.send(f"{ncode}を追加しました")
+            await interaction.followup.send(f"{ncode}:{title}を追加しました")
         else:
             self.logger.error(f"Add Failed: {ncode}")
             await interaction.followup.send(f"登録に失敗しました。{ncode}が正しいものか確認してください。")
