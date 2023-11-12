@@ -19,15 +19,24 @@ class ConfigManager:
             yaml = YAML()
             self._yaml_data = yaml.load(stream)
 
+        # サポートサイトの種類
         self._support = ["naro"]
         self.support_sites: Dict[str, Any] = {}
         for support_site in self._support:
             self.support_sites[support_site] = self.factory_config(support_site)
 
-        # self.channel_id = self.yaml_data["channel"]
-        pass
-
     def factory_config(self, site: str) -> NaroConfigration:
+        """config生成用のfactory関数.
+
+        Args:
+            site (str): サポートサイト
+
+        Raises:
+            KeyError: 対象外のサイトを指定
+
+        Returns:
+            NaroConfigration: 生成したcongig
+        """
         if site == "naro":
             return NaroConfigration(self._yaml_data[site])
         else:

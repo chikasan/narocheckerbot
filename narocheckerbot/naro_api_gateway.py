@@ -6,13 +6,15 @@ from typing import Any, Dict, List, Optional, Tuple
 import aiohttp
 from ruamel.yaml import YAML
 
+from narocheckerbot.webapi_gateway import WebApiGateway
 
-class NaroApiGateway:
+
+class NaroApiGateway(WebApiGateway):
     """小説の更新確認を行う."""
 
     def __init__(self) -> None:
         """初期化."""
-        self.logger = getLogger("narocheckerlog.api")
+        self.logger = getLogger("narocheckerlog.naroapi")
         self.sem = asyncio.Semaphore(10)
 
         # 抽象化のための情報
@@ -35,6 +37,17 @@ class NaroApiGateway:
 
             self.logger.info("Check: Success")
         return results
+
+    def create_query(self, id: Any) -> str:
+        """APIに与えるURLを作成
+
+        Args:
+            id (Any): ncode
+
+        Returns:
+            str: URL
+        """
+        return f"https://api.syosetu.com/novelapi/api/?ncode={id}&of=t-gl"
 
     async def _check_update(self, url: Dict[str, Any]) -> str:
         """更新チェック走査.
@@ -74,7 +87,7 @@ class NaroApiGateway:
             async with aiohttp.ClientSession() as session:
                 ncode = url[self.id]
                 self.logger.info(f"Check: {ncode}")
-                address = f"https://api.syosetu.com/novelapi/api/?ncode={ncode}&of=t-gl"
+                address = self.create_query(ncode)
                 # Todo : 存在チェックは可能?
 
                 cnt = 0
