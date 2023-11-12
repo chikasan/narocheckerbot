@@ -2,14 +2,15 @@ import asyncio
 import os
 from datetime import datetime, timedelta
 from logging import getLogger
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
-import aiohttp
 import discord
 from discord import Interaction, app_commands
 from discord.errors import HTTPException
 from discord.ext import commands, tasks
 from ruamel.yaml import YAML
+
+from narocheckerbot.checker import Checker
 
 
 class NaroChecker(commands.Cog):
@@ -33,6 +34,8 @@ class NaroChecker(commands.Cog):
         with open(self.configfile, "r") as stream:
             yaml = YAML()
             self.yaml_data = yaml.load(stream)
+
+        self.checker_manager = Checker()
 
         self.channel_id = self.yaml_data["channel"]
         self.sem = asyncio.Semaphore(10)
@@ -60,80 +63,6 @@ class NaroChecker(commands.Cog):
             self.logger.error("書き込み権限がありません。")
         pass
 
-    async def check_update(self, url: Dict[str, Any]) -> Tuple[datetime, str]:
-        """URLチェック.
-
-        Args:
-            url (Dict[str, Any]): ncodeと最終更新日を記載した辞書データ
-
-        Returns:
-            Tuple[datetime, str]: 最終更新日, タイトル
-        """
-        try:
-            async with aiohttp.ClientSession() as session:
-                ncode = url["ncode"]
-                self.logger.info(f"Check: {ncode}")
-                address = f"https://api.syosetu.com/novelapi/api/?ncode={ncode}&of=t-gl"
-                # Todo : 存在チェックは可能?
-
-                cnt = 0
-                while cnt < 5:
-                    try:
-                        async with session.get(address) as r:
-                            yaml = YAML()
-                            result = yaml.load(await r.text())
-                            if len(result) == 2:
-                                return (result[1]["general_lastup"], result[1]["title"])
-                            elif len(result) < 2:
-                                self.logger.error(f"Not Found: {ncode} {cnt}")
-                                return (datetime.now(), "")
-                            else:
-                                self.logger.error(f"Lots of candidates: {ncode} {cnt}")
-                                return (datetime.now(), "")
-                    except TypeError:
-                        self.logger.error(f"Retry check: {ncode} {cnt}")
-                        cnt = cnt + 1
-                        await asyncio.sleep(60)
-                    except IndexError:
-                        self.logger.error(f"IndexError check: {ncode} {cnt}")
-                        cnt = cnt + 1
-                        await asyncio.sleep(60)
-                    except OSError:
-                        self.logger.exception(f"Timeout Semaphore: {ncode} {cnt}")
-                        break
-                self.logger.info(f"Timeout check: {ncode}")
-                return (datetime.now(), "")
-        except TypeError as e:
-            self.logger.exception(f"Error check: {e}")
-            # self.logger.info(traceback.format_exc())
-            return (datetime.now(), "")
-
-    async def fetch(self, url: Dict[str, Any]) -> None:
-        """更新チェック走査.
-
-        Args:
-            url (Dict[str, Any]): ncodeと最終更新日を記載した辞書データ
-        """
-        async with self.sem:
-            (new_lastup, title) = await self.check_update(url)
-
-        if len(title) > 0:
-            self.logger.info(f"Check Success: {url['ncode']}")
-            if url["lastupdated"] != new_lastup:
-                url["lastupdated"] = new_lastup
-                # タイトル
-                page = f"https://ncode.syosetu.com/{url['ncode']}/"
-                message = f"[更新] {title}  {page}"
-                self.logger.info(message)
-                await self.sendmessage(message)
-
-                self.write_yaml(filename=self.configfile, data=self.yaml_data)
-                self.logger.info(f"Update: {url['ncode']} {title}")
-        else:
-            message = f"Check Failed: {url['ncode']}"
-            self.logger.error(message)
-            await self.sendmessage(message)
-
     @tasks.loop(seconds=3600)
     async def checker(self) -> None:
         """定期的に実行する処理."""
@@ -144,13 +73,18 @@ class NaroChecker(commands.Cog):
         self.logger.info("Check: Start")
 
         try:
+            updated = False
             urls = self.yaml_data["account"]
-            if urls is None:
-                self.logger.info("Check: Url is None.")
-            else:
-                promises = [self.fetch(url) for url in urls]
-                await asyncio.gather(*promises)
-                self.logger.info("Check: Success")
+            results = await self.checker_manager.exec(urls)
+
+            if results:
+                for message in results:
+                    if message:
+                        updated = True
+                        await self.sendmessage(message)
+
+            if updated:
+                self.write_yaml(filename=self.configfile, data=self.yaml_data)
         except HTTPException:
             message = "レートリミットが発生しました。更新通知が正常に届かない可能性があります"
             self.logger.exception(message)
@@ -226,7 +160,7 @@ class NaroChecker(commands.Cog):
 
         # 本チェック(登録できるか確認)
         url = {"lastupdated": datetime.now(), "ncode": ncode}
-        (new_lastup, title) = await self.check_update(url)
+        (new_lastup, title) = await self.checker_manager.request(url)
 
         if len(title) > 0:
             url["lastupdated"] = new_lastup
