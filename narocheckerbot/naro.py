@@ -127,9 +127,7 @@ class NaroChecker(commands.Cog):
                 self.logger.info(message)
                 await self.sendmessage(message)
 
-                with open(self.configfile, "w") as stream:
-                    yaml = YAML()
-                    yaml.dump(data=self.yaml_data, stream=stream)
+                self.write_yaml(filename=self.configfile, data=self.yaml_data)
                 self.logger.info(f"Update: {url['ncode']} {title}")
         else:
             message = f"Check Failed: {url['ncode']}"
@@ -219,15 +217,24 @@ class NaroChecker(commands.Cog):
 
             self.yaml_data["account"].append(url)
 
-            with open(self.configfile, "w") as stream:
-                yaml = YAML()
-                yaml.dump(data=self.yaml_data, stream=stream)
+            self.write_yaml(filename=self.configfile, data=self.yaml_data)
 
             self.logger.info(f"Add Success: {ncode}")
             await interaction.followup.send(f"{ncode}を追加しました")
         else:
             self.logger.error(f"Add Failed: {ncode}")
             await interaction.followup.send(f"登録に失敗しました。{ncode}が正しいものか確認してください。")
+
+    def write_yaml(self, filename: str, data: Any):
+        """設定ファイルへの書き込み.
+
+        Args:
+            filename (str): _description_
+            data (Any): _description_
+        """
+        with open(filename, "w") as stream:
+            yaml = YAML()
+            yaml.dump(data=data, stream=stream)
 
     @app_commands.command()
     @app_commands.default_permissions()
@@ -242,9 +249,7 @@ class NaroChecker(commands.Cog):
             if url["ncode"] == ncode:
                 removed_value = self.yaml_data["account"].pop(index)
 
-                with open(self.configfile, "w") as stream:
-                    yaml = YAML()
-                    yaml.dump(data=self.yaml_data, stream=stream)
+                self.write_yaml(filename=self.configfile, data=self.yaml_data)
 
                 self.logger.info(f"Delete Success: {removed_value['ncode']}")
                 await interaction.response.send_message(
