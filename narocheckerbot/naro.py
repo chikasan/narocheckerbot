@@ -10,7 +10,7 @@ from discord.errors import HTTPException
 from discord.ext import commands, tasks
 from ruamel.yaml import YAML
 
-from narocheckerbot.checker import NaroApiGateway
+from narocheckerbot.naro_api_gateway import NaroApiGateway
 
 
 class NaroChecker(commands.Cog):
