@@ -14,7 +14,7 @@ class WebApiGateway(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    async def exec(self, urls: Optional[List[Dict[Any, Any]]]) -> List[str]:
+    async def exec(self, urls: Optional[List[Dict[str, Any]]]) -> List[str]:
         pass
 
     @abstractmethod

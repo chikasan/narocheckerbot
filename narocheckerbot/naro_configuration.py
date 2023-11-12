@@ -14,11 +14,11 @@ class NaroConfigration(NovelConfigration):
         # TODO: データが正しいかどうかの確認
         super().__init__(urls)
 
-    def add(self, url: Dict[Any, Any]):
+    def add(self, url: Dict[str, Any]):
         """_summary_
 
         Args:
-            url (Dict[Any, Any]): _description_
+            url (Dict[str, Any]): 追加したいデータ
         """
         self.urls.append(url)
 
@@ -26,10 +26,10 @@ class NaroConfigration(NovelConfigration):
         """指定したncodeに対応する小説を削除する。
 
         Args:
-            ncode (str): _description_
+            ncode (str): ncode
 
         Returns:
-            Dict[Any, Any]: _description_
+            bool: 削除を実行した場合はTrue, 見つからなければFalse
         """
         for index, url in enumerate(self.urls):
             if url["ncode"] == ncode:
@@ -42,7 +42,7 @@ class NaroConfigration(NovelConfigration):
         """リスト登録済みかの確認.
 
         Args:
-            ncode (str): _description_
+            ncode (str): ncode
 
         Returns:
             bool: 登録済みならTrue, そうでなければFalse

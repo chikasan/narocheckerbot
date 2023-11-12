@@ -39,7 +39,7 @@ class ConfigManager:
             KeyError: 対象外のサイトを指定
 
         Returns:
-            NaroConfigration: 生成したcongig
+            NaroConfigration: 生成したconfig
         """
         if site == "naro":
             return NaroConfigration(self._yaml_data[site])
@@ -61,6 +61,6 @@ class ConfigManager:
             site (str): サポートサイト名称
 
         Returns:
-            NaroConfigration: _description_
+            NaroConfigration: config
         """
         return self.support_sites[site]

@@ -14,7 +14,7 @@ class ApiGatewayManager:
             self.support_sites[support_site] = self.factory_config(support_site)
 
     def factory_config(self, site: str) -> WebApiGateway:
-        """config生成用のfactory関数.
+        """API生成用のfactory関数.
 
         Args:
             site (str): サポートサイト
@@ -33,13 +33,13 @@ class ApiGatewayManager:
             raise KeyError("サポート外")
 
     def get_gateway(self, site: str) -> WebApiGateway:
-        """サイト別の設定を取得
+        """サイト別のAPIを取得
 
         Args:
-            site (str): サポートサイト名称
+            site (str): サポートサイト
 
         Returns:
-            NaroConfigration: _description_
+            WebApiGateway: apigateway
         """
         return self.support_sites[site]
 

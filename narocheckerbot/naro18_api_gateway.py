@@ -22,11 +22,14 @@ class Naro18ApiGateway(WebApiGateway):
 
         pass
 
-    async def exec(self, urls: Optional[List[Dict[Any, Any]]]) -> List[str]:
+    async def exec(self, urls: Optional[List[Dict[str, Any]]]) -> List[str]:
         """チェック処理本体.
 
         Args:
-            urls (Optional[List[Dict[Any, Any]]]): ncodeと最終更新日を記載した辞書データ リスト
+            urls (Optional[List[Dict[str, Any]]]): ncodeと最終更新日を記載した辞書データ リスト
+
+        Returns:
+            List[str]: 更新メッセージリスト
         """
         if urls is None:
             self.logger.info("Check: Url is None.")
@@ -54,6 +57,9 @@ class Naro18ApiGateway(WebApiGateway):
 
         Args:
             url (Dict[str, Any]): ncodeと最終更新日を記載した辞書データ
+
+        Returns:
+            str: 更新メッセージ
         """
         message = ""
         async with self.sem:
