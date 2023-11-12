@@ -38,7 +38,6 @@ class NaroChecker(commands.Cog):
         self.checker_manager = NaroApiGateway()
 
         self.channel_id = self.yaml_data["channel"]
-        self.sem = asyncio.Semaphore(10)
         self.checker.start()
 
     async def cog_unload(self):
