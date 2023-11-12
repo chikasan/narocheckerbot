@@ -36,7 +36,7 @@ class NaroChecker(commands.Cog):
         """cog終了処理."""
         self.checker.cancel()
 
-    async def sendmessage(self, channel_id: int, message: str) -> None:
+    async def send_message(self, channel_id: int, message: str) -> None:
         """指定ちゃんねるにメッセージ送付.
 
         Args:
@@ -79,7 +79,7 @@ class NaroChecker(commands.Cog):
                         for message in results:
                             if message:
                                 updated = True
-                                await self.sendmessage(channel_id, message)
+                                await self.send_message(channel_id, message)
 
                     if updated:
                         # TODO: 更新に失敗したら書き込まれない。
@@ -89,15 +89,15 @@ class NaroChecker(commands.Cog):
                     self.logger.exception(message)
                     # レートリミット発生中のため長めの待ち時間を設定
                     await asyncio.sleep(3)
-                    await self.sendmessage(channel_id, message)
+                    await self.send_message(channel_id, message)
                 except AttributeError:
                     message = "要素参照エラーが発生しました。エラーログを確認してください。"
                     self.logger.exception(message)
-                    await self.sendmessage(channel_id, message)
+                    await self.send_message(channel_id, message)
                 except Exception:
                     message = "処理中に問題が発生しました。エラーログを確認してください。"
                     self.logger.exception(message)
-                    await self.sendmessage(channel_id, message)
+                    await self.send_message(channel_id, message)
             except KeyError:
                 "見つからなければ何もしない"
                 self.logger.error(f"{support_site} is not found.")
