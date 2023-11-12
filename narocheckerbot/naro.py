@@ -1,7 +1,6 @@
 import asyncio
 from datetime import datetime, timedelta
 from logging import getLogger
-from typing import Any, Dict
 
 import discord
 from discord import Interaction, app_commands
@@ -10,6 +9,7 @@ from discord.ext import commands, tasks
 
 from narocheckerbot.config_manager import ConfigManager
 from narocheckerbot.naro_api_gateway import NaroApiGateway
+from narocheckerbot.naro_configuration import NaroConfigration
 
 
 class NaroChecker(commands.Cog):
@@ -115,25 +115,6 @@ class NaroChecker(commands.Cog):
         self.logger.info(f"Wait time : {td.total_seconds()}")
         await asyncio.sleep(td.total_seconds())
 
-    def IsExistAccount(self, urls: Any, ncode: str) -> bool:
-        """リスト登録済みかの確認.
-
-        Args:
-            urls (Any): _description_
-            ncode (str): _description_
-
-        Returns:
-            bool: 登録済みならTrue, そうでなければFalse
-        """
-        if urls is not None:
-            for url in urls:
-                if url["ncode"] == ncode:
-                    return True
-        else:
-            # 不正データだった際に整合性を維持する。
-            urls = []
-        return False
-
     @app_commands.command()
     @app_commands.default_permissions()
     async def add(self, interaction: Interaction, ncode: str) -> None:
@@ -145,8 +126,10 @@ class NaroChecker(commands.Cog):
         """
         await interaction.response.defer()
 
+        config = NaroConfigration(self.config_manager.get_urls())
+
         # 事前チェック(リストに登録済みかどうか確認)
-        if self.IsExistAccount(urls=self.config_manager.get_urls(), ncode=ncode):
+        if config.is_exist_account(ncode=ncode):
             await interaction.followup.send(f"{ncode}はすでに登録されています.")
             return
 
@@ -156,7 +139,7 @@ class NaroChecker(commands.Cog):
 
         if len(title) > 0:
             url["lastupdated"] = new_lastup
-            self.config_manager.get_urls().append(url)
+            config.add(url)
             self.config_manager.write_yaml()
 
             self.logger.info(f"Add Success: {ncode}")
@@ -164,24 +147,6 @@ class NaroChecker(commands.Cog):
         else:
             self.logger.error(f"Add Failed: {ncode}")
             await interaction.followup.send(f"登録に失敗しました。{ncode}が正しいものか確認してください。")
-
-    def delete_id(self, urls: Any, ncode: str) -> Dict[Any, Any]:
-        """指定したncodeに対応する小説を削除する。
-
-        Args:
-            urls (Any): _description_
-            ncode (str): _description_
-
-        Returns:
-            Dict[Any, Any]: _description_
-        """
-        removed_value: Dict[Any, Any] = {}
-
-        for index, url in enumerate(urls):
-            if url["ncode"] == ncode:
-                removed_value = urls.pop(index)
-
-        return removed_value
 
     @app_commands.command()
     @app_commands.default_permissions()
@@ -192,7 +157,8 @@ class NaroChecker(commands.Cog):
             interaction (Interaction): インタラクション情報
             ncode (str): ncode
         """
-        removed_value = self.delete_id(self.config_manager.get_urls(), ncode)
+        config = NaroConfigration(self.config_manager.get_urls())
+        removed_value = config.delete(ncode)
         if removed_value:
             self.config_manager.write_yaml()
             self.logger.info(f"Delete Success: {removed_value['ncode']}")
