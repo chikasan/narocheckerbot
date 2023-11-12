@@ -1,3 +1,4 @@
-account:
-    - { lastupdated: 2020-06-19 12:24:00, ncode: n5040ce }
-channel: 00000000000000000
+naro:
+    account:
+        - { lastupdated: 2020-06-19 12:24:00, ncode: n5040ce }
+    channel: 00000000000000000
