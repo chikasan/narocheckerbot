@@ -28,6 +28,7 @@ class NaroChecker(commands.Cog):
         self.bot = bot
         self.logger = getLogger("narocheckerlog.bot")
 
+        # TODO: ConfigとApiConfigのFactoryを作成。サイトごとにセット管理できるようにする。
         self.config_manager = ConfigManager()
         self.gateway_manager = ApiGatewayManager()
         self.checker.start()
