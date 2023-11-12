@@ -10,7 +10,7 @@ from discord.errors import HTTPException
 from discord.ext import commands, tasks
 from ruamel.yaml import YAML
 
-from narocheckerbot.checker import Checker
+from narocheckerbot.checker import NaroApiGateway
 
 
 class NaroChecker(commands.Cog):
@@ -35,7 +35,7 @@ class NaroChecker(commands.Cog):
             yaml = YAML()
             self.yaml_data = yaml.load(stream)
 
-        self.checker_manager = Checker()
+        self.checker_manager = NaroApiGateway()
 
         self.channel_id = self.yaml_data["channel"]
         self.sem = asyncio.Semaphore(10)

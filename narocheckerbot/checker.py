@@ -7,12 +7,12 @@ import aiohttp
 from ruamel.yaml import YAML
 
 
-class Checker:
+class NaroApiGateway:
     """小説の更新確認を行う."""
 
     def __init__(self) -> None:
         """初期化."""
-        self.logger = getLogger("narocheckerlog.checker")
+        self.logger = getLogger("narocheckerlog.api")
         self.sem = asyncio.Semaphore(10)
 
         # 抽象化のための情報
