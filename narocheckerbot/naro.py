@@ -76,6 +76,7 @@ class NaroChecker(commands.Cog):
                         await self.sendmessage(message)
 
             if updated:
+                # TODO: 更新に失敗したら書き込まれない。
                 self.config_manager.write_yaml()
         except HTTPException:
             message = "レートリミットが発生しました。更新通知が正常に届かない可能性があります"
