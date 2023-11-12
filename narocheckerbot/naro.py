@@ -188,7 +188,7 @@ class NaroChecker(commands.Cog):
             interaction (Interaction): インタラクション情報
         """
         try:
-            await self.bot.reload_extension("naro")
+            await self.bot.reload_extension("narocheckerbot.naro")
             self.logger.info("Reload.")
             await interaction.response.send_message("リロードしました")
         except Exception:
