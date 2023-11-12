@@ -1,5 +1,4 @@
 import asyncio
-import os
 from datetime import datetime, timedelta
 from logging import getLogger
 from typing import Any, Dict
@@ -8,8 +7,8 @@ import discord
 from discord import Interaction, app_commands
 from discord.errors import HTTPException
 from discord.ext import commands, tasks
-from ruamel.yaml import YAML
 
+from narocheckerbot.config_manager import ConfigManager
 from narocheckerbot.naro_api_gateway import NaroApiGateway
 
 
@@ -29,15 +28,9 @@ class NaroChecker(commands.Cog):
         super().__init__()
         self.bot = bot
         self.logger = getLogger("narocheckerlog.bot")
-        self.configfile = os.path.dirname(os.path.abspath(__file__)) + "/config.yaml"
 
-        with open(self.configfile, "r") as stream:
-            yaml = YAML()
-            self.yaml_data = yaml.load(stream)
-
+        self.config_manager = ConfigManager()
         self.checker_manager = NaroApiGateway()
-
-        self.channel_id = self.yaml_data["channel"]
         self.checker.start()
 
     async def cog_unload(self):
@@ -51,7 +44,7 @@ class NaroChecker(commands.Cog):
             message (str): 送付メッセージ
         """
         try:
-            channel = self.bot.get_channel(self.channel_id)
+            channel = self.bot.get_channel(self.config_manager.get_channel_id())
             if isinstance(channel, discord.TextChannel):
                 await channel.send(message)
                 # レートリミット対策
@@ -73,7 +66,7 @@ class NaroChecker(commands.Cog):
 
         try:
             updated = False
-            urls = self.yaml_data["account"]
+            urls = self.config_manager.get_urls()
             results = await self.checker_manager.exec(urls)
 
             if results:
@@ -83,7 +76,7 @@ class NaroChecker(commands.Cog):
                         await self.sendmessage(message)
 
             if updated:
-                self.write_yaml(filename=self.configfile, data=self.yaml_data)
+                self.config_manager.write_yaml()
         except HTTPException:
             message = "レートリミットが発生しました。更新通知が正常に届かない可能性があります"
             self.logger.exception(message)
@@ -153,7 +146,7 @@ class NaroChecker(commands.Cog):
         await interaction.response.defer()
 
         # 事前チェック(リストに登録済みかどうか確認)
-        if self.IsExistAccount(urls=self.yaml_data["account"], ncode=ncode):
+        if self.IsExistAccount(urls=self.config_manager.get_urls(), ncode=ncode):
             await interaction.followup.send(f"{ncode}はすでに登録されています.")
             return
 
@@ -163,9 +156,8 @@ class NaroChecker(commands.Cog):
 
         if len(title) > 0:
             url["lastupdated"] = new_lastup
-            self.yaml_data["account"].append(url)
-
-            self.write_yaml(filename=self.configfile, data=self.yaml_data)
+            self.config_manager.get_urls().append(url)
+            self.config_manager.write_yaml()
 
             self.logger.info(f"Add Success: {ncode}")
             await interaction.followup.send(f"{ncode}:{title}を追加しました")
@@ -191,17 +183,6 @@ class NaroChecker(commands.Cog):
 
         return removed_value
 
-    def write_yaml(self, filename: str, data: Any):
-        """設定ファイルへの書き込み.
-
-        Args:
-            filename (str): _description_
-            data (Any): _description_
-        """
-        with open(filename, "w") as stream:
-            yaml = YAML()
-            yaml.dump(data=data, stream=stream)
-
     @app_commands.command()
     @app_commands.default_permissions()
     async def delete(self, interaction: Interaction, ncode: str):
@@ -211,9 +192,9 @@ class NaroChecker(commands.Cog):
             interaction (Interaction): インタラクション情報
             ncode (str): ncode
         """
-        removed_value = self.delete_id(self.yaml_data["account"], ncode)
+        removed_value = self.delete_id(self.config_manager.get_urls(), ncode)
         if removed_value:
-            self.write_yaml(filename=self.configfile, data=self.yaml_data)
+            self.config_manager.write_yaml()
             self.logger.info(f"Delete Success: {removed_value['ncode']}")
             await interaction.response.send_message(f"{removed_value['ncode']}を削除しました")
         else:
