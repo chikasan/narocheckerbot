@@ -23,7 +23,11 @@ class ConfigManager:
         self._support = ["naro", "naro18"]
         self.support_sites: Dict[str, Any] = {}
         for support_site in self._support:
-            self.support_sites[support_site] = self.factory_config(support_site)
+            try:
+                self.support_sites[support_site] = self.factory_config(support_site)
+            except KeyError:
+                "設定が見つからない場合、何もしない"
+                pass
 
     def factory_config(self, site: str) -> NaroConfigration:
         """config生成用のfactory関数.
