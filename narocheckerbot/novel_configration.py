@@ -20,7 +20,7 @@ class NovelConfigration(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def delete(self, ncode: str) -> Dict[Any, Any]:
+    def delete(self, ncode: str) -> bool:
         pass
 
     pass

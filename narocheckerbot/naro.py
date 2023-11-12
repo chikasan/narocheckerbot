@@ -173,8 +173,8 @@ class NaroChecker(commands.Cog):
         removed_value = config.delete(ncode)
         if removed_value:
             self.config_manager.write_yaml()
-            self.logger.info(f"Delete Success: {removed_value['ncode']}")
-            await interaction.response.send_message(f"{removed_value['ncode']}を削除しました")
+            self.logger.info(f"Delete Success: {ncode}")
+            await interaction.response.send_message(f"{ncode}を削除しました")
         else:
             self.logger.error(f"Delete Failed: {ncode}")
             await interaction.response.send_message("登録していない ncode です。")

@@ -22,7 +22,7 @@ class NaroConfigration(NovelConfigration):
         """
         self.urls.append(url)
 
-    def delete(self, ncode: str) -> Dict[Any, Any]:
+    def delete(self, ncode: str) -> bool:
         """指定したncodeに対応する小説を削除する。
 
         Args:
@@ -31,13 +31,12 @@ class NaroConfigration(NovelConfigration):
         Returns:
             Dict[Any, Any]: _description_
         """
-        removed_value: Dict[Any, Any] = {}
-
         for index, url in enumerate(self.urls):
             if url["ncode"] == ncode:
-                removed_value = self.urls.pop(index)
+                self.urls.pop(index)
+                return True
 
-        return removed_value
+        return False
 
     def is_exist_account(self, ncode: str) -> bool:
         """リスト登録済みかの確認.
