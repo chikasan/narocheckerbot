@@ -67,7 +67,7 @@ class NaroApiGateway(WebApiGateway):
 
                 page = f"https://ncode.syosetu.com/{url[self.id]}/"
                 message = f"[更新] {title},{page}"
-                self.logger.info(f"Update: {url[self.id]},{title}")
+                self.logger.info(f"Update: {url[self.id]} {title}")
         else:
             message = f"Check Failed: {url[self.id]}"
             self.logger.error(message)
