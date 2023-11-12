@@ -7,8 +7,8 @@ from discord import Interaction, app_commands
 from discord.errors import HTTPException
 from discord.ext import commands, tasks
 
+from narocheckerbot.apigateway_manager import ApiGatewayManager
 from narocheckerbot.config_manager import ConfigManager
-from narocheckerbot.naro_api_gateway import NaroApiGateway
 
 
 class NaroChecker(commands.Cog):
@@ -29,23 +29,21 @@ class NaroChecker(commands.Cog):
         self.logger = getLogger("narocheckerlog.bot")
 
         self.config_manager = ConfigManager()
-        self.checker_manager = NaroApiGateway()
+        self.gateway_manager = ApiGatewayManager()
         self.checker.start()
 
     async def cog_unload(self):
         """cog終了処理."""
         self.checker.cancel()
 
-    async def sendmessage(self, message: str) -> None:
+    async def sendmessage(self, channel_id: int, message: str) -> None:
         """指定ちゃんねるにメッセージ送付.
 
         Args:
             message (str): 送付メッセージ
         """
         try:
-            channel = self.bot.get_channel(
-                self.config_manager.get_config("naro").channel_id
-            )
+            channel = self.bot.get_channel(channel_id)
             if isinstance(channel, discord.TextChannel):
                 await channel.send(message)
                 # レートリミット対策
@@ -65,34 +63,44 @@ class NaroChecker(commands.Cog):
         """更新チェックメイン処理."""
         self.logger.info("Check: Start")
 
-        try:
-            updated = False
-            urls = self.config_manager.get_config("naro").urls
-            results = await self.checker_manager.exec(urls)
+        self._support = ["naro", "naro18"]
+        for support_site in self._support:
+            try:
+                channel_id = self.config_manager.get_config(support_site).channel_id
+                try:
+                    updated = False
+                    urls = self.config_manager.get_config(support_site).urls
 
-            if results:
-                for message in results:
-                    if message:
-                        updated = True
-                        await self.sendmessage(message)
+                    results = await self.gateway_manager.get_gateway(support_site).exec(
+                        urls
+                    )
 
-            if updated:
-                # TODO: 更新に失敗したら書き込まれない。
-                self.config_manager.write_yaml()
-        except HTTPException:
-            message = "レートリミットが発生しました。更新通知が正常に届かない可能性があります"
-            self.logger.exception(message)
-            # レートリミット発生中のため長めの待ち時間を設定
-            await asyncio.sleep(3)
-            await self.sendmessage(message)
-        except AttributeError:
-            message = "要素参照エラーが発生しました。エラーログを確認してください。"
-            self.logger.exception(message)
-            await self.sendmessage(message)
-        except Exception:
-            message = "処理中に問題が発生しました。エラーログを確認してください。"
-            self.logger.exception(message)
-            await self.sendmessage(message)
+                    if results:
+                        for message in results:
+                            if message:
+                                updated = True
+                                await self.sendmessage(channel_id, message)
+
+                    if updated:
+                        # TODO: 更新に失敗したら書き込まれない。
+                        self.config_manager.write_yaml()
+                except HTTPException:
+                    message = "レートリミットが発生しました。更新通知が正常に届かない可能性があります"
+                    self.logger.exception(message)
+                    # レートリミット発生中のため長めの待ち時間を設定
+                    await asyncio.sleep(3)
+                    await self.sendmessage(channel_id, message)
+                except AttributeError:
+                    message = "要素参照エラーが発生しました。エラーログを確認してください。"
+                    self.logger.exception(message)
+                    await self.sendmessage(channel_id, message)
+                except Exception:
+                    message = "処理中に問題が発生しました。エラーログを確認してください。"
+                    self.logger.exception(message)
+                    await self.sendmessage(channel_id, message)
+            except KeyError:
+                "見つからなければ何もしない"
+                self.logger.error(f"{support_site} is not found.")
 
         self.logger.info("Check: Finish")
 
@@ -137,7 +145,9 @@ class NaroChecker(commands.Cog):
 
         # 本チェック(登録できるか確認)
         url = {"lastupdated": datetime.now(), "ncode": ncode}
-        (new_lastup, title) = await self.checker_manager.request(url)
+        (new_lastup, title) = await self.gateway_manager.get_gateway("naro").request(
+            url
+        )
 
         if len(title) > 0:
             url["lastupdated"] = new_lastup

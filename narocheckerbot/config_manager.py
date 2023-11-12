@@ -20,7 +20,7 @@ class ConfigManager:
             self._yaml_data = yaml.load(stream)
 
         # サポートサイトの種類
-        self._support = ["naro"]
+        self._support = ["naro", "naro18"]
         self.support_sites: Dict[str, Any] = {}
         for support_site in self._support:
             self.support_sites[support_site] = self.factory_config(support_site)
@@ -38,6 +38,8 @@ class ConfigManager:
             NaroConfigration: 生成したcongig
         """
         if site == "naro":
+            return NaroConfigration(self._yaml_data[site])
+        if site == "naro18":
             return NaroConfigration(self._yaml_data[site])
         else:
             raise KeyError("サポート外")

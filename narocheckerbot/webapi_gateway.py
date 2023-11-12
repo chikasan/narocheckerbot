@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from datetime import datetime
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class WebApiGateway(metaclass=ABCMeta):
@@ -11,6 +11,10 @@ class WebApiGateway(metaclass=ABCMeta):
     """
 
     def __init__(self) -> None:
+        pass
+
+    @abstractmethod
+    async def exec(self, urls: Optional[List[Dict[Any, Any]]]) -> List[str]:
         pass
 
     @abstractmethod
