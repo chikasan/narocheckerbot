@@ -64,7 +64,7 @@ class NaroChecker(commands.Cog):
         """更新チェックメイン処理."""
         self.logger.info("Check: Start")
 
-        self._support = ["naro", "naro18"]
+        self._support = ["naro", "naro18", "naro_blog"]
         for support_site in self._support:
             try:
                 channel_id = self.config_manager.get_config(support_site).channel_id

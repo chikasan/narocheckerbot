@@ -3,7 +3,7 @@ from typing import Any, Dict
 from narocheckerbot.novel_configration import NovelConfigration
 
 
-class NaroConfigration(NovelConfigration):
+class NaroBlogConfigration(NovelConfigration):
     """なろうAPIのデータ管理クラス.
 
     Args:
@@ -23,22 +23,22 @@ class NaroConfigration(NovelConfigration):
         self.urls.append(url)
 
     def delete(self, id: str) -> bool:
-        """指定したncodeに対応する小説を削除する。
+        """指定したuseridに対応する小説を削除する。
 
         Args:
-            id (str): ncode
+            id (str): ユーザID
 
         Returns:
             bool: 削除を実行した場合はTrue, 見つからなければFalse
         """
         for index, url in enumerate(self.urls):
-            if url["ncode"] == id:
+            if url["userid"] == id:
                 self.urls.pop(index)
                 return True
 
         return False
 
-    def is_exist_account(self, ncode: str) -> bool:
+    def is_exist_account(self, userid: str) -> bool:
         """リスト登録済みかの確認.
 
         Args:
@@ -48,7 +48,7 @@ class NaroConfigration(NovelConfigration):
             bool: 登録済みならTrue, そうでなければFalse
         """
         for url in self.urls:
-            if url["ncode"] == ncode:
+            if url["userid"] == userid:
                 return True
 
         return False

@@ -1,6 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 
 class WebApiGateway(metaclass=ABCMeta):
@@ -21,6 +20,6 @@ class WebApiGateway(metaclass=ABCMeta):
     def create_query(self, id: Any) -> str:
         pass
 
-    @abstractmethod
-    async def request(self, url: Dict[str, Any]) -> Tuple[datetime, str]:
-        pass
+    # @abstractmethod
+    # async def request(self, url: Dict[str, Any]) -> Tuple[datetime, str]:
+    #     pass

@@ -24,7 +24,7 @@ class NovelConfigration(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def delete(self, ncode: str) -> bool:
+    def delete(self, id: str) -> bool:
         pass
 
     pass
