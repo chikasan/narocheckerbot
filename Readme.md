@@ -15,8 +15,8 @@
 * Raspberry Pi
   * Debian GNU/Linux 12 (bookworm) 64bit
   * Python : 3.11.2
-  * discord.py 2.3.1
-  * poetry : 1.6.1
+  * discord.py 2.5.1
+  * uv : 0.7.13
   * git : 2.39.2
 
 ## 初期設定
