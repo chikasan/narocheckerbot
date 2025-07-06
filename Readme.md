@@ -7,11 +7,11 @@
 ## 動作確認環境
 
 * Windows
-  * Windows10 64bit 22H2
-  * Python : 3.11.4
-  * discord.py 2.3.1
-  * poetry : 1.6.1
-  * git : 2.35.3
+  * Windows11 64bit 24H2
+  * Python : 3.11.12
+  * discord.py 2.5.2
+  * uv : 0.7.11
+  * git : 2.49.0
 * Raspberry Pi
   * Debian GNU/Linux 12 (bookworm) 64bit
   * Python : 3.11.2
@@ -21,12 +21,12 @@
 
 ## 初期設定
 
-1. pythonとpoetry, gitをあらかじめインストールしておく。
+1. pythonとuv, gitをあらかじめインストールしておく。
 2. github上のファイルをダウンロードし、任意の位置に格納する。(git cloneでも可)
 3. pyproject.tomlがあるディレクトリ上で下記を実行し、動作に必要なソフトウェアをインストールする。
 
    ```bash
-   poetry install --only main
+   uv sync
    ```
 
 4. sampleディレクトリにある。config.yamlをnarocheckerbot/narocheckerbotディレクトリにコピーする。
