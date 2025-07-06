@@ -92,11 +92,15 @@ class NaroChecker(commands.Cog):
                     await asyncio.sleep(3)
                     await self.send_message(channel_id, message)
                 except AttributeError:
-                    message = "要素参照エラーが発生しました。エラーログを確認してください。"
+                    message = (
+                        "要素参照エラーが発生しました。エラーログを確認してください。"
+                    )
                     self.logger.exception(message)
                     await self.send_message(channel_id, message)
                 except Exception:
-                    message = "処理中に問題が発生しました。エラーログを確認してください。"
+                    message = (
+                        "処理中に問題が発生しました。エラーログを確認してください。"
+                    )
                     self.logger.exception(message)
                     await self.send_message(channel_id, message)
             except KeyError:
@@ -159,7 +163,9 @@ class NaroChecker(commands.Cog):
             await interaction.followup.send(f"{ncode}:{title}を追加しました")
         else:
             self.logger.error(f"Add Failed: {ncode}")
-            await interaction.followup.send(f"登録に失敗しました。{ncode}が正しいものか確認してください。")
+            await interaction.followup.send(
+                f"登録に失敗しました。{ncode}が正しいものか確認してください。"
+            )
 
     @app_commands.command()
     @app_commands.default_permissions()

@@ -29,7 +29,6 @@ class NaroBot(commands.Bot):
 
     async def setup_hook(self):
         await self.load_extension("narocheckerbot.naro")
-
         await self.tree.sync()
 
     async def on_ready(self):
